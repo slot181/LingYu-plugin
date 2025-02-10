@@ -10,8 +10,8 @@ let ret = [];
 logger.info(logger.yellow("- 正在载入 lingyu-plugin"));
 
 // 读取 ./apps 目录下的 .js 文件
-const appsPath = './apps';
-const modulesPath = './apps/modules';
+const appsPath = './plugins/LingYu-plugin/apps';
+const modulesPath = './plugins/LingYu-plugin/apps/modules';
 
 const readJsFiles = (dirPath) => {
   if (!fs.existsSync(dirPath)) {
