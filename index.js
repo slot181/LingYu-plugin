@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
 if (!global.segment) {
   global.segment = (await import("oicq")).segment;
@@ -8,19 +9,34 @@ let ret = [];
 
 logger.info(logger.yellow("- 正在载入 lingyu-plugin"));
 
-const files = fs
-  .readdirSync('./plugins/lingyu-plugin/apps')
-  .filter((file) => file.endsWith('.js'));
+// 读取 ./apps 目录下的 .js 文件
+const appsPath = './apps';
+const modulesPath = './apps/modules';
 
-files.forEach((file) => {
-  ret.push(import(`./apps/${file}`))
-})
+const readJsFiles = (dirPath) => {
+  if (!fs.existsSync(dirPath)) {
+    logger.warn(`路径不存在: ${dirPath}`);
+    return [];
+  }
+  return fs.readdirSync(dirPath)
+    .filter((file) => file.endsWith('.js'))
+    .map((file) => path.join(dirPath, file));
+};
+
+const appsFiles = readJsFiles(appsPath);
+const modulesFiles = readJsFiles(modulesPath);
+
+const allFiles = [...appsFiles, ...modulesFiles];
+
+allFiles.forEach((filePath) => {
+  ret.push(import(filePath));
+});
 
 ret = await Promise.allSettled(ret);
 
 let apps = {};
-for (let i in files) {
-  let name = files[i].replace('.js', '');
+for (let i in allFiles) {
+  let name = path.basename(allFiles[i], '.js');
 
   if (ret[i].status !== 'fulfilled') {
     logger.error(`载入插件错误：${logger.red(name)}`);
