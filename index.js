@@ -9,9 +9,10 @@ let ret = [];
 
 logger.info(logger.yellow("- 正在载入 lingyu-plugin"));
 
-// 读取 ./apps 目录下的 .js 文件
-const appsPath = './plugins/LingYu-plugin/apps';
-const modulesPath = './plugins/LingYu-plugin/apps/modules';
+// 使用绝对路径
+const baseDir = path.resolve(__dirname, './plugins/LingYu-plugin');
+const appsPath = path.join(baseDir, 'apps');
+const modulesPath = path.join(baseDir, 'apps/modules');
 
 const readJsFiles = (dirPath) => {
   if (!fs.existsSync(dirPath)) {
