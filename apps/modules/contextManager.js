@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { PATHS } from '../../config/settings.js';
+import { PATHS, BOT_SETTINGS } from '../../config/settings.js';
 import { readJSON, writeJSON } from '../../utils/fsUtils.js';
+
+const AI_DISPLAY_NAME = `${BOT_SETTINGS.AI_NAME}(AI)`;
 
 export class ContextManager {
   constructor() {
@@ -72,7 +74,10 @@ export class ContextManager {
           context = [];
         }
       }
-
+      // 如果是AI回复，则添加前缀
+      if (isAIReply) {
+        newMessage = `${AI_DISPLAY_NAME}: ${newMessage}`;
+      }
       const sequenceNumber = context.length > 0 ? context[context.length - 1].seq + 1 : 1;
       const messageObject = { seq: sequenceNumber, message: newMessage };
 
