@@ -1,11 +1,11 @@
-import plugin from "../../lib/plugins/plugin.js";
+import plugin from '../../../lib/plugins/plugin.js'
 import { BOT_SETTINGS } from '../config/settings.js';
 import { ContextManager } from './contextManager.js';
 import { MessageHandler } from './messageHandler.js';
 import { GroupManager } from './groupManager.js';
 import { ApiClient } from './apiClient.js';
 import { readJSON, writeJSON } from '../utils/fsUtils.js';
-import common from "../../lib/common/common.js";
+import common from '../../../lib/common/common.js';
 import { segment } from 'oicq';
 
 export class LingYuPlugin extends plugin {
