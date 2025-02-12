@@ -8,6 +8,8 @@ import { readJSON, writeJSON } from '../utils/fsUtils.js';
 import common from '../../../lib/common/common.js';
 import { segment } from 'oicq';
 import fs from 'fs';
+import { initializeAppConfig } from '../components/Config.js';
+initializeAppConfig();
 
 export class LingYuPlugin extends plugin {
   constructor() {
