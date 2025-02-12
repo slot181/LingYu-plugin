@@ -76,7 +76,7 @@ export class GroupManager {
   }
 
   getCharacterSetting(groupId) {
-    return this.groupConfig.groupCharacterConfig[groupId] || PATHS.DEFAULT_CHARACTER_FILE;
+    return this.groupConfig.groupCharacterConfig[groupId];
   }
 
   async addCharacterSetting(settingName, settingContent) {

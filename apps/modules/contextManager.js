@@ -144,4 +144,30 @@ export class ContextManager {
       return false;
     }
   }
+
+  async getFormattedContext(groupId) {
+    const groupContextFile = path.join(PATHS.groupChatDir, `${groupId}_group_context.json`);
+    try {
+      if (!fs.existsSync(groupContextFile)) {
+        return '';
+      }
+      const data = await fs.promises.readFile(groupContextFile, 'utf-8');
+      let contextArr;
+      try {
+        contextArr = JSON.parse(data);
+        if (!Array.isArray(contextArr)) {
+          console.warn(`上下文文件格式不正确，已重置为空数组: ${groupContextFile}`);
+          contextArr = [];
+        }
+      } catch (parseError) {
+        console.error(`解析上下文文件失败: ${parseError}`);
+        contextArr = [];
+      }
+      const formatted = contextArr.map(item => `${item.seq}: ${item.message}`).join('\n');
+      return formatted;
+    } catch (error) {
+      console.error(`获取格式化上下文失败: ${error}`);
+      return '';
+    }
+  }
 }

@@ -31,8 +31,6 @@ export const PATHS = {
   imageFiles: ['1.gif','2.gif','3.gif','4.gif','5.gif','6.gif','7.gif','8.gif','9.gif','10.gif','11.gif','12.gif','13.gif','14.gif','15.gif','16.gif']
 };
 
-export const DEFAULT_CHARACTER_FILE = path.join(PATHS.promptsDir, '莉娜.txt');
-
 export const GLOBAL_CONFIG_DEFAULTS = {
   model: 'gemini-2.0-flash',
   MAX_CONTEXT_LENGTH: 20,

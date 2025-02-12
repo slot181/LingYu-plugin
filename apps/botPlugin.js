@@ -1,5 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { BOT_SETTINGS, PATHS, GLOBAL_CONFIG_DEFAULTS, DEFAULT_CHARACTER_FILE } from '../config/settings.js';
+import { BOT_SETTINGS, PATHS, GLOBAL_CONFIG_DEFAULTS } from '../config/settings.js';
 import { ContextManager } from './modules/contextManager.js';
 import { MessageHandler } from './modules/messageHandler.js';
 import { GroupManager } from './modules/groupManager.js';
@@ -288,7 +288,7 @@ export class LingYuPlugin extends plugin {
       characterSettingContent = await fs.promises.readFile(characterSettingPath, 'utf-8');
     } catch (error) {
       console.error("读取角色设定失败", error);
-      characterSettingContent = '';
+      characterSettingContent = '默认AI助手';
     }
     const contextMessages = await this.contextManager.getFormattedContext(groupId);
     
