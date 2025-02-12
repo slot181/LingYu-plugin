@@ -121,30 +121,6 @@ export class ContextManager {
     this.saveContextCounts();
   }
 
-  async clearContext(groupId) {
-    const groupContextFile = path.join(PATHS.groupChatDir, `${groupId}_group_context.json`);
-    try {
-      await fs.promises.writeFile(groupContextFile, '[]', 'utf-8');
-      console.log(`群组 ${groupId} 的上下文已清除`);
-      return true;
-    } catch (error) {
-      console.error('清除上下文失败:', error);
-      return false;
-    }
-  }
-
-  async clearUserContext(groupId, userId) {
-    const userContextFile = path.join(PATHS.userChatDir, `${groupId}_${userId}_user_context.json`);
-    try {
-      await fs.promises.writeFile(userContextFile, '[]', 'utf-8');
-      console.log(`用户 ${userId} 在群 ${groupId} 的上下文已清除`);
-      return true;
-    } catch (error) {
-      console.error('清除用户上下文失败:', error);
-      return false;
-    }
-  }
-
   async getFormattedContext(groupId) {
     const groupContextFile = path.join(PATHS.groupChatDir, `${groupId}_group_context.json`);
     try {
