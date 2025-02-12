@@ -1,5 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { BOT_SETTINGS, PATHS, GLOBAL_CONFIG_DEFAULTS } from '../config/settings.js';
+import { BOT_SETTINGS, PATHS, GLOBAL_CONFIG_DEFAULTS, DEFAULT_CHARACTER_FILE } from '../config/settings.js';
 import { ContextManager } from './modules/contextManager.js';
 import { MessageHandler } from './modules/messageHandler.js';
 import { GroupManager } from './modules/groupManager.js';
@@ -281,9 +281,16 @@ export class LingYuPlugin extends plugin {
   }
 
   async buildPrompt(e) {
-    const characterSettingPath = this.groupManager.getCharacterSetting(e.group_id);
-    const characterSettingContent = await fs.promises.readFile(characterSettingPath, 'utf-8');
-    const contextMessages = await this.contextManager.getFormattedContext(e.group_id);
+    const groupId = e.group_id || '读取群组ID失败';
+    const characterSettingPath = this.groupManager.getCharacterSetting(groupId);
+    let characterSettingContent = '';
+    try {
+      characterSettingContent = await fs.promises.readFile(characterSettingPath, 'utf-8');
+    } catch (error) {
+      console.error("读取角色设定失败", error);
+      characterSettingContent = '';
+    }
+    const contextMessages = await this.contextManager.getFormattedContext(groupId);
     
     return `${characterSettingContent}\n\n${contextMessages}\n\n${this.messageHandler.processMessage(e)}`;
   }
