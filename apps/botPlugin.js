@@ -1,12 +1,13 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { BOT_SETTINGS } from '../config/settings.js';
-import { ContextManager } from './contextManager.js';
-import { MessageHandler } from './messageHandler.js';
-import { GroupManager } from './groupManager.js';
-import { ApiClient } from './apiClient.js';
+import { ContextManager } from './modules/contextManager.js';
+import { MessageHandler } from './modules/messageHandler.js';
+import { GroupManager } from './modules/groupManager.js';
+import { ApiClient } from './modules/apiClient.js';
 import { readJSON, writeJSON } from '../utils/fsUtils.js';
 import common from '../../../lib/common/common.js';
 import { segment } from 'oicq';
+import fs from 'fs';
 
 export class LingYuPlugin extends plugin {
   constructor() {
@@ -31,6 +32,7 @@ export class LingYuPlugin extends plugin {
           fnc: 'setProbability',
           permission: 'master,admin,owner'
         },
+
         {
           reg: '^#lingyu添加设定\\s+(\\S+)\\s+([\\s\\S]+)$',
           fnc: 'addSetting',
@@ -108,6 +110,7 @@ export class LingYuPlugin extends plugin {
           reg: '^#lingyu帮助$',
           fnc: 'showHelp'
         },
+        
         {
           reg: '^(?![#\\/])[\\s\\S]*$',
           fnc: 'groupchat'
@@ -122,6 +125,7 @@ export class LingYuPlugin extends plugin {
     this.adminQQ = 1253403835;
   }
 
+  // 加载全局配置
   loadGlobalConfig() {
     const config = readJSON('data/autobot/global_config.json') || {};
     const defaultConfig = {
@@ -169,7 +173,7 @@ export class LingYuPlugin extends plugin {
     }
   }
 
-  // 命令处理方法
+  // 模型命令处理方法
   async setModel(e) {
     const match = e.msg.match(/^#lingyu设置模型\s+(.+)$/);
     if (!match) return;
@@ -217,8 +221,8 @@ export class LingYuPlugin extends plugin {
     await this.reply(`已将群 ${targetGroupId} 的回复概率设置为 ${probability}`, false);
   }
 
-  // ... 其他命令处理方法 ...
 
+  // Bot对话处理方法
   async groupchat(e) {
     if (!e.isGroup || e.self_id === e.sender.user_id) return false;
 
