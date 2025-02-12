@@ -19,16 +19,14 @@ export const AI_NAMES = {
 };
 
 export const PATHS = {
-  configDir: path.join(cwd, 'data/autobot'),
-  dataDir: path.join(cwd, 'data/autobot', 'data'),
-  groupChatDir: path.join(cwd, 'data/autobot', 'data', 'group_chat'),
-  userChatDir: path.join(cwd, 'data/autobot', 'data', 'user_chat'),
-  promptsDir: path.join(cwd, 'data/autobot', 'prompts'),
-  globalConfigPath: path.join(cwd, 'data/autobot', 'global_config.json'),
-  groupStatusPath: path.join(cwd, 'data/autobot', 'group_status.json'),
-  groupReplyConfigPath: path.join(cwd, 'data/autobot', 'group_reply_config.json'),
-  groupCharacterConfigPath: path.join(cwd, 'data/autobot', 'group_character_config.json'),
-  contextCountsPath: path.join(cwd, 'data/autobot', 'context_counts.json'),
+  configDir: path.join(cwd, 'data/lingyu'),
+  dataDir: path.join(cwd, 'data/lingyu', 'data'),
+  groupChatDir: path.join(cwd, 'data/lingyu', 'data', 'group_chat'),
+  userChatDir: path.join(cwd, 'data/lingyu', 'data', 'user_chat'),
+  promptsDir: path.join(cwd, 'data/lingyu', 'prompts'),
+  globalConfigPath: path.join(cwd, 'data/lingyu', 'global_config.json'),
+  groupConfigPath: path.join(cwd, 'data/lingyu', 'group_config.json'),
+  contextCountsPath: path.join(cwd, 'data/lingyu', 'context_counts.json'),
   chuoPath: '/root/TRSS_AllBot/TRSS-Yunzai/resources/image1/',
   imageFiles: ['1.gif','2.gif','3.gif','4.gif','5.gif','6.gif','7.gif','8.gif','9.gif','10.gif','11.gif','12.gif','13.gif','14.gif','15.gif','16.gif']
 };

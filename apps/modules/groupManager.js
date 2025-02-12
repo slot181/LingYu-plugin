@@ -5,68 +5,54 @@ import path from 'path';
 
 export class GroupManager {
   constructor() {
-    this.groupStatus = this.loadGroupStatus();
-    this.groupReplyConfig = this.loadGroupReplyConfig();
-    this.groupCharacterConfig = this.loadGroupCharacterConfig();
+    // 加载统一的群组配置文件
+    this.groupConfig = this.loadUnifiedGroupConfig();
+    // 若配置中不存在相关字段，则设置默认值
+    if (!this.groupConfig.groupStatus) {
+      this.groupConfig.groupStatus = {};
+    }
+    if (!this.groupConfig.groupReplyConfig) {
+      this.groupConfig.groupReplyConfig = { default: 0.99 };
+    }
+    if (!this.groupConfig.groupCharacterConfig) {
+      this.groupConfig.groupCharacterConfig = {};
+    }
     this.lastReplyTime = {};
     this.cooldownPeriod = 3000;
   }
 
-  loadGroupStatus() {
-    return readJSON(PATHS.groupStatusPath) || {};
+  loadUnifiedGroupConfig() {
+    const config = readJSON(PATHS.groupConfigPath);
+    return config || {};
   }
 
-  saveGroupStatus() {
-    writeJSON(PATHS.groupStatusPath, this.groupStatus);
-  }
-
-  loadGroupReplyConfig() {
-    const config = readJSON(PATHS.groupReplyConfigPath);
-    if (!config) {
-      const defaultConfig = { default: 0.99 };
-      writeJSON(PATHS.groupReplyConfigPath, defaultConfig);
-      return defaultConfig;
-    }
-    return config;
-  }
-
-  saveGroupReplyConfig() {
-    writeJSON(PATHS.groupReplyConfigPath, this.groupReplyConfig);
-  }
-
-  loadGroupCharacterConfig() {
-    return readJSON(PATHS.groupCharacterConfigPath) || {};
-  }
-
-  saveGroupCharacterConfig() {
-    writeJSON(PATHS.groupCharacterConfigPath, this.groupCharacterConfig);
+  saveUnifiedGroupConfig() {
+    writeJSON(PATHS.groupConfigPath, this.groupConfig);
   }
 
   setGroupStatus(groupId, status) {
-    this.groupStatus[groupId] = status;
-    this.saveGroupStatus();
+    this.groupConfig.groupStatus[groupId] = status;
+    this.saveUnifiedGroupConfig();
   }
 
   isPluginEnabled(groupId) {
-    return this.groupStatus[groupId] !== false;
+    return this.groupConfig.groupStatus[groupId] !== false;
   }
 
   setGroupReplyProbability(groupId, probability) {
-    this.groupReplyConfig[groupId] = probability;
-    this.saveGroupReplyConfig();
+    this.groupConfig.groupReplyConfig[groupId] = probability;
+    this.saveUnifiedGroupConfig();
   }
 
   getReplyProbability(groupId) {
-    const groupProbability = this.groupReplyConfig[groupId];
+    const groupProbability = this.groupConfig.groupReplyConfig[groupId];
     if (groupProbability !== undefined) {
       return groupProbability;
     }
-
-    const defaultProbability = this.groupReplyConfig.default;
+    const defaultProbability = this.groupConfig.groupReplyConfig.default;
     if (defaultProbability !== undefined) {
       return defaultProbability;
     }
-
     return 1.0;
   }
 
@@ -82,15 +68,15 @@ export class GroupManager {
   async setCharacterSetting(groupId, settingName) {
     const newPath = path.join(PATHS.promptsDir, `${settingName}.txt`);
     if (fs.existsSync(newPath)) {
-      this.groupCharacterConfig[groupId] = newPath;
-      this.saveGroupCharacterConfig();
+      this.groupConfig.groupCharacterConfig[groupId] = newPath;
+      this.saveUnifiedGroupConfig();
       return true;
     }
     return false;
   }
 
   getCharacterSetting(groupId) {
-    return this.groupCharacterConfig[groupId] || PATHS.DEFAULT_CHARACTER_FILE;
+    return this.groupConfig.groupCharacterConfig[groupId] || PATHS.DEFAULT_CHARACTER_FILE;
   }
 
   async addCharacterSetting(settingName, settingContent) {
@@ -98,7 +84,6 @@ export class GroupManager {
     if (fs.existsSync(filePath)) {
       return false;
     }
-
     try {
       await fs.promises.writeFile(filePath, settingContent, 'utf-8');
       return true;
@@ -113,7 +98,6 @@ export class GroupManager {
     if (!fs.existsSync(settingPath)) {
       return false;
     }
-
     try {
       await fs.promises.unlink(settingPath);
       return true;
@@ -126,8 +110,7 @@ export class GroupManager {
   async listCharacterSettings() {
     try {
       const files = await fs.promises.readdir(PATHS.promptsDir);
-      return files.filter(file => file.endsWith('.txt'))
-                 .map(file => path.parse(file).name);
+      return files.filter(file => file.endsWith('.txt')).map(file => path.parse(file).name);
     } catch (error) {
       console.error('读取角色设定文件失败:', error);
       return [];
@@ -135,26 +118,21 @@ export class GroupManager {
   }
 
   clearGroupConfig(groupId) {
-    delete this.groupReplyConfig[groupId];
-    this.saveGroupReplyConfig();
-
-    delete this.groupStatus[groupId];
-    this.saveGroupStatus();
-
-    delete this.groupCharacterConfig[groupId];
-    this.saveGroupCharacterConfig();
+    delete this.groupConfig.groupReplyConfig[groupId];
+    delete this.groupConfig.groupStatus[groupId];
+    delete this.groupConfig.groupCharacterConfig[groupId];
+    this.saveUnifiedGroupConfig();
 
     const groupContextFile = path.join(PATHS.groupChatDir, `${groupId}_group_context.json`);
     if (fs.existsSync(groupContextFile)) {
       fs.writeFileSync(groupContextFile, '[]', 'utf-8');
     }
-
     return true;
   }
 
   async getGroupStatus() {
     let statusMessage = '群组状态:\n';
-    for (const [groupId, status] of Object.entries(this.groupStatus)) {
+    for (const [groupId, status] of Object.entries(this.groupConfig.groupStatus)) {
       const probability = this.getReplyProbability(groupId);
       const characterSetting = this.getCharacterSetting(groupId);
       const settingName = path.basename(characterSetting, '.txt');
