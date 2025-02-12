@@ -6,7 +6,7 @@ import path from 'path';
 export class GroupManager {
   constructor() {
     this.groupStatus = this.loadGroupStatus();
-    this.groupReplyConfig = this.loadGroupReplyConfig();容器选择菜单.sh
+    this.groupReplyConfig = this.loadGroupReplyConfig();
     this.groupCharacterConfig = this.loadGroupCharacterConfig();
     this.lastReplyTime = {};
     this.cooldownPeriod = 3000;
