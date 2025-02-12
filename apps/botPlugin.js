@@ -1,5 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { BOT_SETTINGS } from '../config/settings.js';
+import { BOT_SETTINGS, PATHS, GLOBAL_CONFIG_DEFAULTS } from '../config/settings.js';
 import { ContextManager } from './modules/contextManager.js';
 import { MessageHandler } from './modules/messageHandler.js';
 import { GroupManager } from './modules/groupManager.js';
@@ -129,20 +129,12 @@ export class LingYuPlugin extends plugin {
 
   // 加载全局配置
   loadGlobalConfig() {
-    const config = readJSON('data/autobot/global_config.json') || {};
-    const defaultConfig = {
-      model: 'gemini-2.0-flash',
-      MAX_CONTEXT_LENGTH: 20,
-      backupModels: ['gemini-2.0-pro-exp-02-05'],
-      maxRetries: 2,
-      retryDelay: 5000,
-      isMuted: false
-    };
-    return { ...defaultConfig, ...config };
+    const config = readJSON(PATHS.globalConfigPath) || {};
+    return { ...GLOBAL_CONFIG_DEFAULTS, ...config };
   }
-
+  
   saveGlobalConfig(config) {
-    writeJSON('data/autobot/global_config.json', config);
+    writeJSON(PATHS.globalConfigPath, config);
   }
 
   async reply(content, quote = false) {
@@ -222,7 +214,6 @@ export class LingYuPlugin extends plugin {
     this.groupManager.setGroupReplyProbability(targetGroupId, probability);
     await this.reply(`已将群 ${targetGroupId} 的回复概率设置为 ${probability}`, false);
   }
-
 
   // Bot对话处理方法
   async groupchat(e) {

@@ -32,3 +32,12 @@ export const PATHS = {
 };
 
 export const DEFAULT_CHARACTER_FILE = path.join(PATHS.promptsDir, '莉娜.txt');
+
+export const GLOBAL_CONFIG_DEFAULTS = {
+  model: 'gemini-2.0-flash',
+  MAX_CONTEXT_LENGTH: 20,
+  backupModels: ['gemini-2.0-pro-exp-02-05'],
+  maxRetries: 2,
+  retryDelay: 5000,
+  isMuted: false
+};
