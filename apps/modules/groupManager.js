@@ -1,12 +1,12 @@
-import { PATHS } from '../config/settings.js';
-import { readJSON, writeJSON } from '../utils/fsUtils.js';
+import { PATHS } from '../../config/settings.js';
+import { readJSON, writeJSON } from '../../utils/fsUtils.js';
 import fs from 'fs';
 import path from 'path';
 
 export class GroupManager {
   constructor() {
     this.groupStatus = this.loadGroupStatus();
-    this.groupReplyConfig = this.loadGroupReplyConfig();
+    this.groupReplyConfig = this.loadGroupReplyConfig();容器选择菜单.sh
     this.groupCharacterConfig = this.loadGroupCharacterConfig();
     this.lastReplyTime = {};
     this.cooldownPeriod = 3000;

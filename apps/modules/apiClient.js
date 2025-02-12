@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { API_CONFIG } from '../config/settings.js';
+import { API_CONFIG } from '../../config/settings.js';
 
 export class ApiClient {
   constructor(globalConfig) {

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { PATHS } from '../config/settings.js';
-import { readJSON, writeJSON } from '../utils/fsUtils.js';
+import { PATHS } from '../../config/settings.js';
+import { readJSON, writeJSON } from '../../utils/fsUtils.js';
 
 export class ContextManager {
   constructor() {

@@ -1,4 +1,4 @@
-import { AI_NAMES } from '../config/settings.js';
+import { AI_NAMES } from '../../config/settings.js';
 
 export class MessageHandler {
   constructor() {
