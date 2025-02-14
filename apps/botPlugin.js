@@ -1,5 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { BOT_SETTINGS, PATHS, GLOBAL_CONFIG_DEFAULTS } from '../config/settings.js';
+import { BOT_SETTINGS, PATHS, GLOBAL_CONFIG_DEFAULTS, ADMIN_QQ } from '../config/settings.js';
 import { ContextManager } from './modules/contextManager.js';
 import { MessageHandler } from './modules/messageHandler.js';
 import { GroupManager } from './modules/groupManager.js';
@@ -45,7 +45,6 @@ export class LingYuPlugin extends plugin {
     this.messageHandler = new MessageHandler();
     this.groupManager = new GroupManager();
     this.apiClient = new ApiClient(this.loadGlobalConfig());
-    this.adminQQ = 1253403835;
   }
 
   // 加载全局配置
@@ -229,6 +228,6 @@ export class LingYuPlugin extends plugin {
   }
 
   isMaster(e) {
-    return e.user_id === this.adminQQ;
+    return e.sender && e.sender.user_id === ADMIN_QQ;
   }
 }

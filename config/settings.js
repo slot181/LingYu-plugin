@@ -12,6 +12,7 @@ export const BOT_SETTINGS = {
   POKE_PROBABILITY: 0.15,
   AI_NAME: "清风影"
 };
+export const ADMIN_QQ = 1253403835;
 
 export const AI_NAMES = {
   AI_DISPLAY_NAME: `${BOT_SETTINGS.AI_NAME}(AI)`,
