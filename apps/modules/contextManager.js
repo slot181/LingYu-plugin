@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { PATHS, BOT_SETTINGS } from '../../config/settings.js';
+import { PATHS, BOT_SETTINGS, GLOBAL_CONFIG_DEFAULTS } from '../../config/settings.js';
 import { readJSON, writeJSON } from '../../utils/fsUtils.js';
 
 const AI_DISPLAY_NAME = `${BOT_SETTINGS.AI_NAME}(AI)`;
@@ -104,6 +104,10 @@ export class ContextManager {
   }
 
   countContextUpdates(contextType, groupId, userId = null) {
+    // 获取最新全局配置中设置的对话轮数
+    const config = readJSON(PATHS.globalConfigPath) || {};
+    const maxContextLength = config.MAX_CONTEXT_LENGTH || GLOBAL_CONFIG_DEFAULTS.MAX_CONTEXT_LENGTH;
+    
     if (!this.contextCounts[contextType]) {
       this.contextCounts[contextType] = {};
     }
@@ -113,6 +117,10 @@ export class ContextManager {
         this.contextCounts[contextType][groupId] = 0;
       }
       this.contextCounts[contextType][groupId]++;
+      if (this.contextCounts[contextType][groupId] >= maxContextLength) {
+        console.log(`群 ${groupId} 的上下文更新次数达到限制 (${maxContextLength})，已重置计数器。`);
+        this.contextCounts[contextType][groupId] = 0;
+      }
     } else if (contextType === 'user') {
       if (!this.contextCounts[contextType][groupId]) {
         this.contextCounts[contextType][groupId] = {};
@@ -121,6 +129,10 @@ export class ContextManager {
         this.contextCounts[contextType][groupId][userId] = 0;
       }
       this.contextCounts[contextType][groupId][userId]++;
+      if (this.contextCounts[contextType][groupId][userId] >= maxContextLength) {
+        console.log(`用户 ${userId} 在群 ${groupId} 的上下文更新次数达到限制 (${maxContextLength})，已重置计数器。`);
+        this.contextCounts[contextType][groupId][userId] = 0;
+      }
     }
 
     this.saveContextCounts();
