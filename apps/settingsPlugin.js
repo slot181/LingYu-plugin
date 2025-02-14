@@ -1,4 +1,4 @@
-import plugin from "../lib/plugins/plugin.js";
+import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs';
 import fsPromises from 'fs/promises';
 import path from 'path';
