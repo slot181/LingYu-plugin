@@ -79,7 +79,13 @@ export class ContextManager {
         newMessage = `${AI_DISPLAY_NAME}: ${newMessage}`;
       }
       const sequenceNumber = context.length > 0 ? context[context.length - 1].seq + 1 : 1;
-      const messageObject = { seq: sequenceNumber, message: newMessage };
+      const now = new Date();
+      const timestamp = now.toLocaleString('zh-CN', {
+        timeZone: 'Asia/Shanghai',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+      const messageObject = { seq: sequenceNumber, message: newMessage, timestamp };
 
       if (quotedMessage && quotedSender) {
         console.log('引用:', quotedMessage, '来自:', quotedSender);
@@ -156,7 +162,7 @@ export class ContextManager {
         console.error(`解析上下文文件失败: ${parseError}`);
         contextArr = [];
       }
-      const formatted = contextArr.map(item => `${item.seq}: ${item.message}`).join('\n');
+      const formatted = contextArr.map(item => `${item.seq} [${item.timestamp || '无时间记录'}]: ${item.message}`).join('\n');
       return formatted;
     } catch (error) {
       console.error(`获取格式化上下文失败: ${error}`);

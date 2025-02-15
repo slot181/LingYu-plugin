@@ -87,7 +87,7 @@ export class LingYuPlugin extends plugin {
     }
   }
 
-  // 模型命令处理方法
+  // 模型设置处理方法
   async setModel(e) {
     const match = e.msg.match(/^#lingyu设置模型\s+(.+)$/);
     if (!match) return;
