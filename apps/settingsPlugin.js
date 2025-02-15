@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs';
 import fsPromises from 'fs/promises';
 import path from 'path';
+import common from "../../../lib/common/common.js";
 
 import { PATHS, ADMIN_QQ } from "../config/settings.js";
 
@@ -34,6 +35,11 @@ export class SettingsPlugin extends plugin {
         {
           reg: '^#lingyu查看角色设定$',
           fnc: 'readCharacterSettings',
+          permission: 'master,admin,owner'
+        },
+        {
+          reg: '^#lingyu查看角色设定列表$',
+          fnc: 'readCharacterSettingList',
           permission: 'master,admin,owner'
         }
       ]
@@ -158,12 +164,6 @@ export class SettingsPlugin extends plugin {
   }
 
   async readCharacterSettings(e) {
-    // 权限检查
-    if (!this.isMaster(e) && !this.isGroupAdmin(e)) {
-      await this.reply('只有主人、群主和管理员可以查看角色设定。', false);
-      return;
-    }
-
     try {
       let groupConfig = {};
       if (fs.existsSync(groupConfigPath)) {
@@ -185,6 +185,39 @@ export class SettingsPlugin extends plugin {
     } catch (error) {
       console.error('读取角色设定失败:', error);
       await this.reply('读取角色设定时出错，请检查日志。', false);
+    }
+  }
+
+  async readCharacterSettingList(e) {
+    // 权限检查
+    if (!this.isMaster(e) && !this.isGroupAdmin(e)) {
+      await this.reply('只有主人、群主和管理员可以查看角色设定。', false);
+      return;
+    }
+
+    try {
+      // 读取prompts目录下的所有文件
+      const files = await fsPromises.readdir(promptsDir);
+      const txtFiles = files.filter(file => file.endsWith('.txt'));
+
+      if (txtFiles.length === 0) {
+        await this.reply('当前没有任何角色设定。', false);
+        return;
+      }
+
+      // 构建角色设定列表消息
+      let settingsList = '当前可用的角色设定列表：\n';
+      for (let i = 0; i < txtFiles.length; i++) {
+        const settingName = path.basename(txtFiles[i], '.txt');
+        settingsList += `${i + 1}. ${settingName}\n`;
+      }
+
+      // 使用转发消息的方法发送角色设定列表
+      const forwardMsg = await common.makeForwardMsg(e, [settingsList], `${e.sender.card || e.sender.nickname} 的角色设定列表`);
+      await this.reply(forwardMsg);
+    } catch (error) {
+      console.error('读取角色设定列表失败:', error);
+      await this.reply('读取角色设定列表时出错，请检查日志。', false);
     }
   }
 }
